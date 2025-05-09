@@ -3,31 +3,31 @@ import { StyleSheet } from "react-native";
 const styles = StyleSheet.create({
   albumArtist: {
     fontSize: 14,
-    color: "#666", // Medium gray for artist text
-    marginTop: 4, // Space from the title
+    color: "#666",
+    marginTop: 4,
     textAlign: "center",
   },
   albumCard: {
-    width: "90%", // 90% of the screen width
+    width: "90%",
     borderWidth: 1,
     borderColor: "#ddd",
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
     alignItems: "center",
-    backgroundColor: "#fff", // Add a white background
-    shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset
-    shadowOpacity: 0.1, // Shadow opacity
-    shadowRadius: 4, // Shadow blur radius
-    elevation: 3, // Elevation for Android
+    backgroundColor: "#fff",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   albumTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#333", // Dark grey for better readability // Space from the top
-    marginBottom: 4, // Space to the next element
-    textAlign: "center", // Center-align text
+    color: "#333",
+    marginBottom: 4,
+    textAlign: "center",
   },
   container: {
     flex: 1,

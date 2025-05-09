@@ -48,7 +48,8 @@ export default function App() {
           name="Photos"
           component={PhotosScreen}
           options={{
-            drawerLabel: () => <Text>Photos</Text>,
+            drawerItemStyle: { height: 0 },
+            title: "",
           }}
         />
         <Drawer.Screen
