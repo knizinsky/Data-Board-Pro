@@ -9,20 +9,29 @@ import {
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 
-const FilterModal = ({ modalVisible, onClose, todos, authors, states }) => {
-  console.log("Authors:", states);
-  console.log("Authors:", authors);
+const FilterModal = ({
+  modalVisible,
+  onClose,
+  authors,
+  states,
+  onApplyFilter,
+  onResetFilter,
+}) => {
   const [searchText, setSearchText] = useState("");
   const [selectedAuthor, setSelectedAuthor] = useState("");
   const [selectedState, setSelectedState] = useState("");
 
-  function applyFilter() {
-    throw new Error("Not implemented yet");
-  }
+  const applyFilter = () => {
+    onApplyFilter({ searchText, selectedAuthor, selectedState });
+    onClose();
+  };
 
-  function resetFilters() {
-    throw new Error("Not implemented yet");
-  }
+  const resetFilters = () => {
+    setSearchText("");
+    setSelectedAuthor("");
+    setSelectedState("");
+    onResetFilter();
+  };
 
   return (
     <Modal
@@ -31,68 +40,59 @@ const FilterModal = ({ modalVisible, onClose, todos, authors, states }) => {
       visible={modalVisible}
       onRequestClose={onClose}
     >
-      <View style={styles.fullScreenView}>
+      <View style={styles.overlay}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Filter Options</Text>
-          <Text style={styles.textLabels}>Search by text</Text>
+          <Text style={styles.modalTitle}>🔍 Filtruj zadania</Text>
+
+          <Text style={styles.label}>Szukaj po tytule</Text>
           <TextInput
             style={styles.input}
-            onChangeText={setSearchText}
+            placeholder="Wpisz fragment tytułu..."
             value={searchText}
-            placeholder="Search text"
+            onChangeText={setSearchText}
           />
-          <Text style={styles.textLabels}>Select todo Author</Text>
-          <Picker
-            selectedValue={selectedAuthor}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedAuthor(itemValue)
-            }
-          >
-            {authors.map((author) => (
-              <Picker.Item
-                key={author.id}
-                label={author.name}
-                value={author.id}
-              />
-            ))}
-          </Picker>
-          <Text style={styles.textLabels}>Select todo state</Text>
-          <Picker
-            selectedValue={selectedState}
-            style={styles.picker}
-            onValueChange={(itemValue, itemIndex) =>
-              setSelectedState(itemValue)
-            }
-          >
-            {states.map((state) => (
-              <Picker.Item key={state} label={state} value={state} />
-            ))}
-          </Picker>
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              applyFilter(selectedAuthor, selectedState);
-            }}
-          >
-            <Text style={styles.textStyle}>Apply filter</Text>
-          </TouchableOpacity>
 
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={() => {
-              resetFilters();
-            }}
-          >
-            <Text style={styles.textStyle}>Reset filters</Text>
-          </TouchableOpacity>
+          <Text style={styles.label}>Wybierz autora</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={selectedAuthor}
+              onValueChange={(itemValue) => setSelectedAuthor(itemValue)}
+              style={styles.picker}
+            >
+              {authors.map((author) => (
+                <Picker.Item
+                  key={author.id}
+                  label={author.name || "Wszyscy"}
+                  value={author.id}
+                />
+              ))}
+            </Picker>
+          </View>
 
-          <TouchableOpacity
-            style={[styles.button, styles.buttonClose]}
-            onPress={onClose}
-          >
-            <Text style={styles.textStyle}>Close</Text>
-          </TouchableOpacity>
+          <Text style={styles.label}>Stan zadania</Text>
+          <View style={styles.pickerWrapper}>
+            <Picker
+              selectedValue={selectedState}
+              onValueChange={(itemValue) => setSelectedState(itemValue)}
+              style={styles.picker}
+            >
+              {states.map((state) => (
+                <Picker.Item key={state} label={state || "Wszystkie"} value={state} />
+              ))}
+            </Picker>
+          </View>
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity style={styles.button} onPress={applyFilter}>
+              <Text style={styles.buttonText}>Zastosuj</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={resetFilters}>
+              <Text style={styles.buttonText}>Wyczyść</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.button, styles.closeButton]} onPress={onClose}>
+              <Text style={styles.buttonText}>Zamknij</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </Modal>
@@ -100,59 +100,65 @@ const FilterModal = ({ modalVisible, onClose, todos, authors, states }) => {
 };
 
 const styles = StyleSheet.create({
-  fullScreenView: {
+  overlay: {
     flex: 1,
-    justifyContent: "flex-start",
-    alignItems: "stretch",
-    marginTop: 0,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "flex-end",
   },
   modalView: {
-    flex: 1,
-    backgroundColor: "white",
-    padding: 35,
-    alignItems: "stretch",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    backgroundColor: "#fff",
+    borderTopRightRadius: 20,
+    borderTopLeftRadius: 20,
+    padding: 24,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "#333",
+    textAlign: "center",
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#444",
+    marginTop: 12,
   },
   input: {
-    height: 40,
-    margin: 12,
     borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
     padding: 10,
+    marginTop: 6,
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 8,
+    marginTop: 6,
   },
   picker: {
-    height: 50,
-    margin: 12,
+    height: 44,
+    width: "100%",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 24,
   },
   button: {
-    width: 100,
-    margin: 10,
-    padding: 10,
-    elevation: 2,
-    alignSelf: "center",
+    backgroundColor: "#4a90e2",
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 10,
   },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+  closeButton: {
+    backgroundColor: "#999",
   },
-  textStyle: {
-    color: "white",
+  buttonText: {
+    color: "#fff",
     fontWeight: "bold",
-    textAlign: "center",
-  },
-  textLabels: {
-    color: "black",
-    fontWeight: "bold",
-    left: 20,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
   },
 });
 

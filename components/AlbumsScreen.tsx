@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  ScrollView,
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native";
 import { fetchAlbums, fetchUsers } from "../api/api";
 import { mapUserToId } from "../utilities/utils";
-import styles from "../styles/styles";
-import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
 function AlbumsScreen() {
   const navigation = useNavigation();
-
-  const openPhotos = (albumId: any, userId: any) => {
-    navigation.navigate("Photos", { albumId, userId });
-  };
-
   const [albums, setAlbums] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
 
@@ -32,45 +32,69 @@ function AlbumsScreen() {
     fetchData();
   }, []);
 
+  const openPhotos = (albumId: number, userId: number) => {
+    navigation.navigate("Photos", { albumId, userId });
+  };
+
   return (
-    <View style={{ flex: 1 }}>
-      <ScrollView style={{ flex: 1 }}>
-        <View
-          style={{
-            marginTop: 10,
-            alignItems: "center",
-            justifyContent: "center",
-          }}
+    <ScrollView contentContainerStyle={styles.container}>
+      {albums.map((album) => (
+        <TouchableOpacity
+          key={album.id}
+          style={styles.card}
+          onPress={() => openPhotos(album.id, album.userId)}
         >
-          {albums.map((album) => (
-            <TouchableOpacity
-              style={styles.albumCard}
-              key={album.id}
-              onPress={() => openPhotos(album.id, album.userId)}
-            >
-              <View>
-                <Text style={styles.albumTitle}>{album.id}</Text>
-                <Text
-                  style={[
-                    styles.albumTitle,
-                    {
-                      fontWeight: "600",
-                      color: "#007bff",
-                    },
-                  ]}
-                >
-                  {album.title}
-                </Text>
-                <Text style={styles.albumArtist}>
-                  {mapUserToId(album.userId, users)}
-                </Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-      </ScrollView>
-    </View>
+          <View style={styles.header}>
+            <Ionicons name="albums-outline" size={22} color="#03a9f4" />
+            <Text style={styles.user}>{mapUserToId(album.userId, users)}</Text>
+          </View>
+          <Text style={styles.albumId}>📀 Album #{album.id}</Text>
+          <Text style={styles.albumTitle}>{album.title}</Text>
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 16,
+    paddingBottom: 24,
+    backgroundColor: "#f6f8fa",
+  },
+  card: {
+    backgroundColor: "#fff",
+    padding: 16,
+    borderRadius: 12,
+    marginBottom: 16,
+    elevation: 2,
+    borderLeftWidth: 5,
+    borderLeftColor: "#03a9f4",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+  user: {
+    marginLeft: 8,
+    color: "#555",
+    fontSize: 14,
+  },
+  albumId: {
+    fontWeight: "bold",
+    fontSize: 15,
+    color: "#444",
+    marginBottom: 4,
+  },
+  albumTitle: {
+    fontSize: 16,
+    color: "#333",
+  },
+});
 
 export default AlbumsScreen;

@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 
 function TodosScreen() {
   const [todos, setTodos] = useState<any[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<any[]>([]);
   const [users, setUsers] = useState<any[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
@@ -28,6 +29,7 @@ function TodosScreen() {
           fetchUsers(),
         ]);
         setTodos(todosData);
+        setFilteredTodos(todosData);
         setUsers(usersData);
       } catch (error) {
         console.error(error);
@@ -36,13 +38,38 @@ function TodosScreen() {
     fetchData();
   }, []);
 
+  const handleApplyFilter = ({ searchText, selectedAuthor, selectedState }) => {
+    let filtered = todos;
+
+    if (searchText.trim()) {
+      filtered = filtered.filter((todo) =>
+        todo.title.toLowerCase().includes(searchText.toLowerCase())
+      );
+    }
+
+    if (selectedAuthor && selectedAuthor !== -1) {
+      filtered = filtered.filter((todo) => todo.userId === selectedAuthor);
+    }
+
+    if (selectedState && selectedState !== " ") {
+      const isDone = selectedState === "Done";
+      filtered = filtered.filter((todo) => todo.completed === isDone);
+    }
+
+    setFilteredTodos(filtered);
+  };
+
+  const handleResetFilter = () => {
+    setFilteredTodos(todos);
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: "#f6f8fa" }}>
       <TouchableOpacity style={styles.filterIcon} onPress={toggleModal}>
         <Ionicons name="filter" size={28} color="#444" />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {todos.map((todo) => (
+        {filteredTodos.map((todo) => (
           <TouchableOpacity
             key={todo.id}
             style={[
@@ -72,8 +99,10 @@ function TodosScreen() {
       <FilterModal
         modalVisible={modalVisible}
         onClose={toggleModal}
-        authors={[{ id: -1, name: "" }, ...users.map((u) => ({ id: u.id, name: u.name }))]}
+        authors={[{ id: -1, name: "Wszyscy" }, ...users.map((u) => ({ id: u.id, name: u.name }))]}
         states={[" ", "Done", "In Progress"]}
+        onApplyFilter={handleApplyFilter}
+        onResetFilter={handleResetFilter}
       />
     </View>
   );
