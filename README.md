@@ -52,9 +52,9 @@ Otwórz aplikację na telefonie za pomocą aplikacji Expo Go lub uruchom w emula
 
 📦 TypeScript
 
-💅 expo-font, expo-blur, @react-navigation
+💅 expo-font,  @react-navigation
 
-🎨 UI: glassmorphism + modern design system
+🎨 UI:  modern design system
 
 # 🌐 API
 Dane pobierane są z:
