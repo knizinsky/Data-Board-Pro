@@ -10,7 +10,6 @@
 📦 Przegląd danych: `Todos`, `Posts`, `Users`, `Albums`, `Photos`, `Comments`  
 🧠 Szczegóły rekordu po kliknięciu  
 🔎 **Filtruj Todos** po autorze, statusie i tytule  
-🖼 Efekt szkła (glassmorphism) i customowe czcionki (`Poppins`)  
 🌙 Tryb modalny z przejściami  
 🚀 Działa na Android, iOS, Web (Expo)
 
